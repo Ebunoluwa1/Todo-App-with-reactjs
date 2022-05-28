@@ -1,27 +1,26 @@
-import { useState , useEffect } from "react";
+/* eslint-disable no-undef */
+import { useState, useEffect } from "react";
 import React from "react";
 
 
-const FormTodo = () => {
+const FormTodo = ({todo, setTodo,todos, setTodos, navState}) => {
     /*state hook */
-   const [todo, setTodo] = useState("");
-   const [todos, setTodos] =useState([]);
+    const [filterTodos, setFilterTodos] = useState(todos)    
 
-   
-   useEffect(() => {
-
-       const temp =localStorage.getItem("todos")
-       const loadedTodos =JSON.parse(temp)
-        
-       if (loadedTodos){
-           setTodos(loadedTodos);
+    useEffect(() => {
+       if (navState === "All") {  
+            setFilterTodos(todos)
        }
-   }, []);
-
-    useEffect(()=> {
-        const temp = JSON.stringify(todos)
-        localStorage.setItem("todos",temp)    
-    }, [todos]);
+       
+       if (navState === "Active") {  
+      const Active = todos.filter(todo => todo.completed === false );
+      setFilterTodos(Active)
+    }
+    if (navState === "Completed") {  
+       const Completed = todos.filter(todo => todo.completed === true );
+        setFilterTodos(Completed)
+    }
+    }, [navState, todos]);
 
 
    //useEffect
@@ -38,6 +37,7 @@ const FormTodo = () => {
         };
 
       setTodos([...todos].concat(newTodo))
+      localStorage.setItem("todos",JSON.stringify([...todos].concat(newTodo))) 
       setTodo("");
    };
      
@@ -61,12 +61,13 @@ const FormTodo = () => {
    }
 
    function removeTodos (id) {
-    setTodos(todos.filter(todos => todos.id === id))
+    setFilterTodos(todos.filter(todo => todo.id === todo.completed ))
 }
 
     return ( 
         <div className="form">
-            <form onSubmit={handleSubmit}>
+          {navState !== "Completed" && (
+               <form onSubmit={handleSubmit}>
                {/* /*input and button*/ }
                 <input className="input" type="text"
                 value={todo}
@@ -75,18 +76,28 @@ const FormTodo = () => {
                onChange={(e)=> setTodo(e.target.value)}
                 />
                <button className="btn1" type="submit">Add</button>
-               {todos.map((todo) => 
+            </form> 
+         )}
+            
+            {filterTodos.map((todo) => 
                <div className="Todo" key={todo.id}>
-              <div className="flex"> <input type="checkbox" onClick={()=>toggleComplete(todo.id)} />
-              <h3 
-              style={{textDecoration: todo.completed ? "line-through" : null}}> {todo.text} </h3> </div>
-              <span onClick={()=>removeTodo(todo.id)}>
-                    {<img src="https://img.icons8.com/ios/50/000000/delete-forever--v1.png" alt="del"/>}
-                </span>
+
+                    <div className="flex">
+                        <input type="checkbox" 
+                        defaultChecked={todo.completed === true ? 'checked' : ''} 
+                        onClick={()=>toggleComplete(todo.id)} />
+                            <h3 
+                        style={{textDecoration:todo.completed ? "line-through" : null}}> 
+                        {todo.text} </h3> 
+                   </div>
+
+                    <span onClick={()=>removeTodo(todo.id)}>
+                        {<img src="https://img.icons8.com/ios/50/000000/delete-forever--v1.png" alt="del"/>}
+                    </span>
                
                </div>)}
-            </form>
-            <button onClick={()=>removeTodos(todos.id)}  className="btn"><img className="img" src="https://img.icons8.com/ios/50/000000/delete-forever--v1.png" alt="del"/> delete all</button>
+
+       { navState === "Completed" &&  <button onClick={()=>removeTodos(todos.id)} className="btn"><img className="img" src="https://img.icons8.com/ios/50/000000/delete-forever--v1.png" alt="del"/> delete all</button>}
         </div>
      );
 }

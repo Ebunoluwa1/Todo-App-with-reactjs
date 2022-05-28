@@ -1,36 +1,42 @@
 import {BrowserRouter as Router} from 'react-router-dom';
 import Navbar from './Navbar';
 import FormTodo from './FormTodo';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
-const NAV_MAP ={
-  All: () => true,
-  Active: todo => !todo.completed,
-  Completed: todo => todo.completed
-}
 
-const NAV_NAMES = Object.keys(NAV_MAP);
 
 function App() {
-     
-  const [nav, setNav] = useState('All');
 
-  const navList =(id) => NAV_NAMES.map(todo => (
-    <Navbar 
-    key={todo.id} 
-    todo={todo} 
-    isClicked= {todo === nav}
-    setNav={setNav}
-    />
-  ));
+  const [todo, setTodo] = useState("");
+  const [todos, setTodos] =useState([]);
+  const [navState, setNavState] = useState('All');
+
+  useEffect(() => {
+
+    const temp =localStorage.getItem("todos")
+    const loadedTodos =JSON.parse(temp)
+     
+    if (loadedTodos){
+        setTodos(loadedTodos);
+    }
+  }, []);
+  
+  
 
   return (
     <Router>
      {/* header */}
     <div className="App">
     <h1 className="title"> #todo</h1>
-      <Navbar> {navList} </Navbar>
-      <FormTodo />
+      <Navbar    navState={navState}
+        setNavState={setNavState}
+      />
+      <FormTodo todo={todo}
+        todos={todos}
+        setTodo={setTodo}
+        setTodos={setTodos}
+        navState={navState}
+      />
     </div>
     </Router>
   );

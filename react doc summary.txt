@@ -1,0 +1,36 @@
+remoteok.com
+
+I want to write on my progress on Soar Digital.
+
+npm install --save react@latest
+ THINKING REACTS
+
+Step 1: Break The UI Into A Component Hierarchy
+
+Step 2: Build A Static Version in React
+. The easiest way is to build a version that takes your data model and renders the UI but has no interactivity. It’s best to decouple these processes because building a static version requires a lot of typing and no thinking, and adding interactivity requires a lot of thinking and not a lot of typing.At the end of this step, you’ll have a library of reusable components that render your data model. The components will only have render() methods since this is a static version of your app.
+
+In simpler examples, it’s usually easier to go top-down, and on larger projects, it’s easier to go bottom-up and write tests as you build.
+
+Step 3: Identify The Minimal (but complete) Representation Of UI State
+To build your app correctly, you first need to think of the minimal set of mutable state that your app needs. The key here is DRY: Don’t Repeat Yourself. 
+tips: to be state since they change over time
+
+Step 4: Identify Where Your State Should Live
+tips: where the state can be easily accessible by other components
+
+For each piece of state in your application:
+
+Identify every component that renders something based on that state.
+Find a common owner component (a single component above all the components that need the state in the hierarchy).
+Either the common owner or another component higher up in the hierarchy should own the state.
+If you can’t find a component where it makes sense to own the state, create a new component solely for holding the state and add it somewhere in the hierarchy above the common owner component.
+
+Step 5: Add Inverse Data Flow
+tip: how it can continue all over .This is done by reverse.
+
+
+HOOKS__ Hooks are functions that let you “hook into” React features from function components. Their names always start with use..
+ “State Hook” - helps us add local state to React function components
+The Effect Hook lets you perform side effects in function components:
+A custom Hook is a JavaScript function whose name starts with ”use” and that may call other Hooks
